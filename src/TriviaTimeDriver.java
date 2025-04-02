@@ -1,7 +1,6 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: TriviaTimeDriver.java
 // Creates a driver class for the Trivia Time project
-
 import database.GameData;
 import game.GameTime;
 import javafx.application.Application;
@@ -16,7 +15,6 @@ public class TriviaTimeDriver extends Application {
 		GameData dbObj = new GameData();
 		
 		dbObj.getCategory();
-		dbObj.getQuestions();
 		dbObj.getAnswers();
 		dbObj.getLeaderboard();
 		dbObj.close();

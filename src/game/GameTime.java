@@ -1,8 +1,11 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: GameTime.java
 // Creates the Trivia Time game itself
-
 package game;
+
+import database.GameData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -10,7 +13,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
@@ -21,43 +23,22 @@ public class GameTime extends BorderPane {
 	private Button btnBack;
 	private Button btnExit;
 	
+	private Label lblWelcome;
 	private Label lblChooseTopic;
 	
+	private Button[] categories;
+	private int[] categoryIDs;
+	
+	/*
 	private Button btnBingU;
-	private Button btnSfgadv;
+	private Button btnSfGadv;
 	private Button btnVeg;
 	private Button btnPsych;
 	private Button btnGeo;
+	*/
 	
-	private RadioButton option1;
-	private RadioButton option2;
-	private RadioButton option3;
-	private RadioButton option4;
-	private RadioButton option5;
-	
-	private Button btnSubmit;
-	
-	private Label correct1;
-	private Label correct2;
-	private Label correct3;
-	private Label correct4;
-	private Label correct5;
-	
-	private Label youAnswered1;
-	private Label youAnswered2;
-	private Label youAnswered3;
-	private Label youAnswered4;
-	private Label youAnswered5;
-	
-	private Label correctAnswer1;
-	private Label correctAnswer2;
-	private Label correctAnswer3;
-	private Label correctAnswer4;
-	private Label correctAnswer5;
-	
-	private Label gameFinished;
-	
-	private HBox backAndExitButtonsBox;
+	private HBox backButtonBox;
+	private HBox exitButtonBox;
 	private VBox bodyBox;
 	
 	private String title;
@@ -66,65 +47,87 @@ public class GameTime extends BorderPane {
 		
 		// Initializations
 		
-		btnBack = new Button();
 		btnExit = new Button();
 		
-		lblChooseTopic = new Label();
+		lblWelcome = new Label("Welcome to Trivia Time!");
 		
+		lblChooseTopic = new Label("Choose a topic:");
+		
+		/*
 		btnBingU = new Button();
-		btnSfgadv = new Button();
+		btnSfGadv = new Button();
 		btnVeg = new Button();
 		btnPsych = new Button();
 		btnGeo = new Button();
-		
-		option1 = new RadioButton();
-		option2 = new RadioButton();
-		option3 = new RadioButton();
-		option4 = new RadioButton();
-		option5 = new RadioButton();
-		
-		btnSubmit = new Button();
-		
-		correct1 = new Label();
-		correct2 = new Label();
-		correct3 = new Label();
-		correct4 = new Label();
-		correct5 = new Label();
-		
-		youAnswered1 = new Label();
-		youAnswered2 = new Label();
-		youAnswered3 = new Label();
-		youAnswered4 = new Label();
-		youAnswered5 = new Label();
-		
-		correctAnswer1 = new Label();
-		correctAnswer2 = new Label();
-		correctAnswer3 = new Label();
-		correctAnswer4 = new Label();
-		correctAnswer5 = new Label();
-		
-		gameFinished = new Label();
-		
-		backAndExitButtonsBox = new HBox();
-		bodyBox = new VBox();
+		*/
 		
 		this.title = "Trivia Time!";
 		
-		styleScreen();
+		createCategoryButtons();
+		styleLandingScreen();
 		show();
-		createGameListeners();
+		createLandingListeners();
 		
 	}
 	
-	public void styleScreen() {
+	public void createCategoryButtons() {
 		
-		backAndExitButtonsBox.setSpacing(20);
-		backAndExitButtonsBox.setAlignment(Pos.CENTER);
-		backAndExitButtonsBox.setPadding(new Insets(0, 0, 0, 0));
+		int rowCount;
+		GameData dbObj = new GameData();
+		ResultSet rs = dbObj.getCategory();
+		try {
+			rs.last();
+			rowCount = rs.getRow();
+			rs.beforeFirst();
+			categories = new Button[rowCount];
+			categoryIDs = new int[rowCount];
+            int loopCount = 0;
+			while (rs.next()) {
+				categories[loopCount] = new Button(rs.getString("CategoryName"));
+				categoryIDs[loopCount] = rs.getInt("CategoryID");
+				loopCount++;
+            }
+			categories[0].setStyle("-fx-base: brown");
+			categories[1].setStyle("-fx-base: yellow");
+			categories[2].setStyle("-fx-base: green");
+			categories[3].setStyle("-fx-base: blue");
+			categories[4].setStyle("-fx-base: red");
+			System.out.println("Loop Count = " + loopCount);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void styleLandingScreen() {
+		
+		// Exit Button Box
+		
+		exitButtonBox = new HBox(btnExit);
+		exitButtonBox.setSpacing(20);
+		exitButtonBox.setAlignment(Pos.CENTER);
+		exitButtonBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		btnExit.setText("Exit");
+		
+		this.setRight(exitButtonBox);
+		
+		// Category Boxes
+		
+		lblWelcome.setStyle("-fx-font: 24 arial");
+		bodyBox = new VBox(lblWelcome, lblChooseTopic);
+		
+		for (int i = 0; i < categories.length; i++) {
+			bodyBox.getChildren().add(categories[i]);
+		}
 		
 		bodyBox.setSpacing(20);
 		bodyBox.setAlignment(Pos.CENTER);
 		bodyBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setCenter(bodyBox);
+		
+		// compilationBox = new VBox(exitButtonBox, bodyBox);
 		
 	}
 	
@@ -140,8 +143,29 @@ public class GameTime extends BorderPane {
 		
 	}
 	
-	private void createGameListeners() {
+	private void createLandingListeners() {
 		
-	}
-	
+		btnExit.setOnAction(e -> {
+			
+			Platform.exit();
+			
+		});
+		
+		for (int i = 0; i < categories.length; i++) {
+			int index = i;
+			categories[i].setOnAction(e -> {
+				new TriviaQuestions(categoryIDs[index]);
+				
+				backButtonBox = new HBox(btnExit);
+				backButtonBox.setSpacing(20);
+				backButtonBox.setAlignment(Pos.CENTER);
+				backButtonBox.setPadding(new Insets(0, 0, 0, 0));
+				
+				btnBack.setText("Back");
+				
+				this.setLeft(backButtonBox);
+			});
+		}
+		
+	}	
 }

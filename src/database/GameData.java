@@ -1,7 +1,6 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: GameData.java
 // Creates a database for the Trivia Time project
-
 package database;
 
 import java.sql.Connection;
@@ -49,9 +48,9 @@ public class GameData {
 		System.out.println("");
 		
 		try {
-			statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * FROM category");
-            ResultSetMetaData mData = rs.getMetaData();
+            /*
+			ResultSetMetaData mData = rs.getMetaData();
             int numOfCatColumns = mData.getColumnCount();
             for (int i = 1; i <= numOfCatColumns; i++) {
                 System.out.printf("%-20s", mData.getColumnName(i));
@@ -63,6 +62,7 @@ public class GameData {
                 }
                 System.out.println();
             }
+            */
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -72,14 +72,13 @@ public class GameData {
 		
 	}
 	
-	public ResultSet getQuestions() {
+	public ResultSet getQuestions(int category) {
 		
 		ResultSet rs = null;
 		System.out.println("");
 		
 		try {
-			statement = connection.createStatement();
-			rs = statement.executeQuery("SELECT * FROM questions");
+			rs = statement.executeQuery("SELECT * FROM questions WHERE categoryID = " + category);
             ResultSetMetaData mData = rs.getMetaData();
             int numOfQuesColumns = mData.getColumnCount();
             for (int i = 1; i <= numOfQuesColumns; i++) {
@@ -107,7 +106,6 @@ public class GameData {
 		System.out.println("");
 		
 		try {
-			statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * FROM answers");
             ResultSetMetaData mData = rs.getMetaData();
             int numOfAnsColumns = mData.getColumnCount();
@@ -136,7 +134,6 @@ public class GameData {
 		System.out.println("");
 		
 		try {
-			statement = connection.createStatement();
 			rs = statement.executeQuery("SELECT * FROM leaderboard");
             ResultSetMetaData mData = rs.getMetaData();
             int numOfLeadColumns = mData.getColumnCount();
