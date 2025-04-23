@@ -78,7 +78,7 @@ public class GameData {
 		System.out.println("");
 		
 		try {
-			rs = statement.executeQuery("SELECT * FROM questions WHERE categoryID = " + category);
+			rs = statement.executeQuery("SELECT * FROM questions WHERE category_CategoryID = " + category);
             ResultSetMetaData mData = rs.getMetaData();
             int numOfQuesColumns = mData.getColumnCount();
             for (int i = 1; i <= numOfQuesColumns; i++) {
@@ -100,13 +100,13 @@ public class GameData {
 		
 	}
 	
-	public ResultSet getAnswers() {
+	public ResultSet getAnswers(int question) {
 		
 		ResultSet rs = null;
 		System.out.println("");
 		
 		try {
-			rs = statement.executeQuery("SELECT * FROM answers");
+			rs = statement.executeQuery("SELECT * FROM answers WHERE questions_QuestionID = " + question);
             ResultSetMetaData mData = rs.getMetaData();
             int numOfAnsColumns = mData.getColumnCount();
             for (int i = 1; i <= numOfAnsColumns; i++) {
@@ -125,6 +125,21 @@ public class GameData {
 		
 		System.out.println("");
 		return rs;
+		
+	}
+	
+	public void saveLeaderboard(String name, int categoryID, int answeredCorrectly) {
+		
+		String insertStatement = "INSERT INTO leaderboard (name, categoryID, score) VALUES ('" + name + "', " + categoryID + ", '" + answeredCorrectly + "')";
+
+		try {
+			statement.executeUpdate(insertStatement);
+			System.out.println("Leaderboard data inserted");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(insertStatement);
 		
 	}
 	

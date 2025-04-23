@@ -37,7 +37,7 @@ INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALU
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (31,'Rewarding someone by presenting them with a good stimulus',7,0);
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (32,'Rewarding someone by removing a bad stimulus from them',7,1);
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (33,'Punishing someone by presenting them with a bad stimulus',7,0);
-INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (34,'Punishing them by removing a good stimulus from them',7,0);
+INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (34,'Punishing someone by removing a good stimulus from them',7,0);
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (35,'None of the above',7,0);
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (36,'Authoritative',8,1);
 INSERT INTO `answers` (`AnswerID`,`Answer`,`questions_QuestionID`, correct) VALUES (37,'Authoritarian',8,0);

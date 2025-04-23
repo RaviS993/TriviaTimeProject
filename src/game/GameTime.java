@@ -8,37 +8,43 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import leaderboard.LeaderboardScreen;
 
 public class GameTime extends BorderPane {
 
-	private Button btnBack;
 	private Button btnExit;
+	private Button btnShowLeaderboard = new Button("Show Leaderboard");
 	
 	private Label lblWelcome;
 	private Label lblChooseTopic;
 	
+	private Label lblEnterName;
+	private TextField tfEnterName = new TextField();
+	private String enteredName;
+	
+	private int numberOfCorrectAnswers = 0;
+	private Label correctAnswerTally = new Label("Number of questions answered correctly: " + numberOfCorrectAnswers);
+	
 	private Button[] categories;
 	private int[] categoryIDs;
+	private boolean[] categoryUsed;
 	
-	/*
-	private Button btnBingU;
-	private Button btnSfGadv;
-	private Button btnVeg;
-	private Button btnPsych;
-	private Button btnGeo;
-	*/
-	
-	private HBox backButtonBox;
 	private HBox exitButtonBox;
+	private HBox correctAnswerTallyBox = new HBox(20);
+	private HBox enterNameBox = new HBox(20);
 	private VBox bodyBox;
 	
 	private String title;
@@ -48,18 +54,23 @@ public class GameTime extends BorderPane {
 		// Initializations
 		
 		btnExit = new Button();
+		btnShowLeaderboard.setVisible(false);
 		
 		lblWelcome = new Label("Welcome to Trivia Time!");
-		
 		lblChooseTopic = new Label("Choose a topic:");
+		lblEnterName = new Label("Enter your name:");
 		
-		/*
-		btnBingU = new Button();
-		btnSfGadv = new Button();
-		btnVeg = new Button();
-		btnPsych = new Button();
-		btnGeo = new Button();
-		*/
+		tfEnterName.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent enbl) {
+				if (enbl.getCode().equals(KeyCode.ENTER)) {
+					enteredName = tfEnterName.getText();
+					for (int i = 0; i < categories.length; i++) {
+						categories[i].setDisable(false);
+					}
+				}
+			}
+		});
 		
 		this.title = "Trivia Time!";
 		
@@ -81,10 +92,12 @@ public class GameTime extends BorderPane {
 			rs.beforeFirst();
 			categories = new Button[rowCount];
 			categoryIDs = new int[rowCount];
+			categoryUsed = new boolean[rowCount];
             int loopCount = 0;
 			while (rs.next()) {
 				categories[loopCount] = new Button(rs.getString("CategoryName"));
 				categoryIDs[loopCount] = rs.getInt("CategoryID");
+				categories[loopCount].setDisable(true);
 				loopCount++;
             }
 			categories[0].setStyle("-fx-base: brown");
@@ -93,13 +106,33 @@ public class GameTime extends BorderPane {
 			categories[3].setStyle("-fx-base: blue");
 			categories[4].setStyle("-fx-base: red");
 			System.out.println("Loop Count = " + loopCount);
+			if (categories[0].isDisabled() == true && categories[1].isDisabled() == true
+					&& categories[2].isDisabled() == true && categories[3].isDisabled() == true
+					&& categories[4].isDisabled() == true) {
+				btnShowLeaderboard.setVisible(true);
+			}
+			dbObj.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
 	}
 	
+	public void updateCategoryUsed(int categoryIndex) {
+		categoryUsed[categoryIndex] = true;
+		categories[categoryIndex].setDisable(true);
+	}
+	
 	public void styleLandingScreen() {
+		
+		// Correct Answer Tally Box
+		
+		correctAnswerTallyBox.getChildren().add(correctAnswerTally);
+		this.setTop(correctAnswerTallyBox);
+		
+		// Enter Name Box
+		
+		enterNameBox.getChildren().addAll(lblEnterName, tfEnterName);
 		
 		// Exit Button Box
 		
@@ -115,7 +148,7 @@ public class GameTime extends BorderPane {
 		// Category Boxes
 		
 		lblWelcome.setStyle("-fx-font: 24 arial");
-		bodyBox = new VBox(lblWelcome, lblChooseTopic);
+		bodyBox = new VBox(lblWelcome, enterNameBox, lblChooseTopic);
 		
 		for (int i = 0; i < categories.length; i++) {
 			bodyBox.getChildren().add(categories[i]);
@@ -128,6 +161,8 @@ public class GameTime extends BorderPane {
 		this.setCenter(bodyBox);
 		
 		// compilationBox = new VBox(exitButtonBox, bodyBox);
+		
+		this.setBottom(btnShowLeaderboard);
 		
 	}
 	
@@ -143,29 +178,30 @@ public class GameTime extends BorderPane {
 		
 	}
 	
-	private void createLandingListeners() {
+	public void createLandingListeners() {
 		
 		btnExit.setOnAction(e -> {
-			
 			Platform.exit();
-			
 		});
 		
 		for (int i = 0; i < categories.length; i++) {
 			int index = i;
 			categories[i].setOnAction(e -> {
-				new TriviaQuestions(categoryIDs[index]);
-				
-				backButtonBox = new HBox(btnExit);
-				backButtonBox.setSpacing(20);
-				backButtonBox.setAlignment(Pos.CENTER);
-				backButtonBox.setPadding(new Insets(0, 0, 0, 0));
-				
-				btnBack.setText("Back");
-				
-				this.setLeft(backButtonBox);
+				new TriviaQuestions(categoryIDs[index], this, index, enteredName);
 			});
 		}
 		
-	}	
+		btnShowLeaderboard.setOnAction(e -> {
+			LeaderboardScreen dbLbs = new LeaderboardScreen();
+		});
+		
+	}
+
+	public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
+		System.out.println("The number of correct answers is " + numberOfCorrectAnswers);
+		this.numberOfCorrectAnswers += numberOfCorrectAnswers;
+		System.out.println("The number of correct answers after update is " + this.numberOfCorrectAnswers);
+		correctAnswerTally.setText("Number of questions answered correctly: " + this.numberOfCorrectAnswers);
+	}
+	
 }
