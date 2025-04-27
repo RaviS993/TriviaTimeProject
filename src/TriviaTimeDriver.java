@@ -1,5 +1,6 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: TriviaTimeDriver.java
+//
 // Creates a driver class for the Trivia Time project
 //
 // import database.GameData;

@@ -1,9 +1,12 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: GameTime.java
+//
 // Creates the Trivia Time game itself
 package game;
 
 import database.GameData;
+import finished.GameFinishedScreen;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,6 +27,8 @@ import javafx.stage.Stage;
 import leaderboard.LeaderboardScreen;
 
 public class GameTime extends BorderPane {
+	
+	Stage stage = new Stage();
 
 	private Button btnExit;
 	private Button btnShowLeaderboard = new Button("Show Leaderboard");
@@ -45,7 +50,9 @@ public class GameTime extends BorderPane {
 	private HBox exitButtonBox;
 	private HBox correctAnswerTallyBox = new HBox(20);
 	private HBox enterNameBox = new HBox(20);
+	
 	private VBox bodyBox;
+	private VBox bottomBox;
 	
 	private String title;
 	
@@ -54,7 +61,6 @@ public class GameTime extends BorderPane {
 		// Initializations
 		
 		btnExit = new Button();
-		btnShowLeaderboard.setVisible(false);
 		
 		lblWelcome = new Label("Welcome to Trivia Time!");
 		lblChooseTopic = new Label("Choose a topic:");
@@ -106,11 +112,6 @@ public class GameTime extends BorderPane {
 			categories[3].setStyle("-fx-base: blue");
 			categories[4].setStyle("-fx-base: red");
 			System.out.println("Loop Count = " + loopCount);
-			if (categories[0].isDisabled() == true && categories[1].isDisabled() == true
-					&& categories[2].isDisabled() == true && categories[3].isDisabled() == true
-					&& categories[4].isDisabled() == true) {
-				btnShowLeaderboard.setVisible(true);
-			}
 			dbObj.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -154,6 +155,8 @@ public class GameTime extends BorderPane {
 			bodyBox.getChildren().add(categories[i]);
 		}
 		
+		// Body Box
+		
 		bodyBox.setSpacing(20);
 		bodyBox.setAlignment(Pos.CENTER);
 		bodyBox.setPadding(new Insets(0, 0, 0, 0));
@@ -162,16 +165,22 @@ public class GameTime extends BorderPane {
 		
 		// compilationBox = new VBox(exitButtonBox, bodyBox);
 		
-		this.setBottom(btnShowLeaderboard);
+		// Bottom Box
+		
+		bottomBox = new VBox(btnShowLeaderboard);
+		
+		bottomBox.setSpacing(20);
+		bottomBox.setAlignment(Pos.CENTER);
+		bodyBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setBottom(bottomBox);
 		
 	}
 	
 	public void show() {
 		
-		Stage stage = new Stage();
-		
 		//The usual
-		Scene scene = new Scene(this, 700, 350);
+		Scene scene = new Scene(this, 700, 500);
 		stage.setTitle(title);
 		stage.setScene(scene);
 		stage.show();
@@ -202,6 +211,22 @@ public class GameTime extends BorderPane {
 		this.numberOfCorrectAnswers += numberOfCorrectAnswers;
 		System.out.println("The number of correct answers after update is " + this.numberOfCorrectAnswers);
 		correctAnswerTally.setText("Number of questions answered correctly: " + this.numberOfCorrectAnswers);
+	}
+
+	public void checkGameOver() {
+		boolean gameOver = true;
+		
+		for (int i = 0; i < categoryUsed.length; i++) {
+			if (categoryUsed[i] == false) {
+				gameOver = false;
+				break;
+			}
+		}
+		
+		if (gameOver) {
+			new GameFinishedScreen();
+			stage.close();
+		}
 	}
 	
 }

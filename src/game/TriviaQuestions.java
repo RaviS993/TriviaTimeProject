@@ -1,5 +1,6 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: TriviaQuestions.java
+//
 // Creates the Trivia Time questions
 package game;
 
@@ -156,7 +157,7 @@ public class TriviaQuestions extends BorderPane {
 	private void createQuizListeners(int category) {
 		
 		btnExit.setOnAction(e -> {
-			Platform.exit();
+			stage.close();
 		});
 		
 		btnSubmit.setOnAction(e -> {
@@ -200,6 +201,7 @@ public class TriviaQuestions extends BorderPane {
 				landingScreen.setNumberOfCorrectAnswers(answeredCorrectly);
 				GameData dbGdt = new GameData();
 				dbGdt.saveLeaderboard(enteredName, category, answeredCorrectly);
+				landingScreen.checkGameOver();
 				dbGdt.close();
 				stage.close();
 			}
@@ -210,7 +212,7 @@ public class TriviaQuestions extends BorderPane {
 	public void show() {
 		
 		//The usual
-		Scene scene = new Scene(this, 700, 350);
+		Scene scene = new Scene(this, 700, 500);
 		stage.setTitle("title");
 		stage.setScene(scene);
 		stage.show();

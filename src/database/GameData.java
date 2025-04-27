@@ -1,5 +1,6 @@
 // Project: Comp296 - Trivia Time Project
 // Filename: GameData.java
+//
 // Creates a database for the Trivia Time project
 package database;
 
@@ -148,8 +149,11 @@ public class GameData {
 		ResultSet rs = null;
 		System.out.println("");
 		
+		String query = "SELECT LeaderboardID, Name, CategoryName, Score FROM leaderboard JOIN category USING (CategoryID) ORDER BY Score DESC";
+		
 		try {
-			rs = statement.executeQuery("SELECT * FROM leaderboard");
+			rs = statement.executeQuery(query);
+			/*
             ResultSetMetaData mData = rs.getMetaData();
             int numOfLeadColumns = mData.getColumnCount();
             for (int i = 1; i <= numOfLeadColumns; i++) {
@@ -162,6 +166,7 @@ public class GameData {
                 }
                 System.out.println();
             }
+            */
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
