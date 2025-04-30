@@ -12,12 +12,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import leaderboard.LeaderboardScreen;
 
 public class GameFinishedScreen extends BorderPane {
 	
 	private Stage stage = new Stage();
 	
-	private Button btnExit = new Button();
+	private Button btnExit = new Button("Exit");
+	private Button btnShowLeaderboard = new Button("Show Leaderboard");
+	
 	private Label lblGameFinished = new Label("Game Finished!");
 	
 	public GameFinishedScreen() {
@@ -43,12 +46,23 @@ public class GameFinishedScreen extends BorderPane {
 		
 		this.setRight(btnExit);
 		
+		// Show Leaderboard Button
+		
+		btnShowLeaderboard.setAlignment(Pos.CENTER);
+		btnShowLeaderboard.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setBottom(btnShowLeaderboard);		
+		
 	}
 	
 	private void createGameFinishedListeners() {
 		
 		btnExit.setOnAction(e -> {
 			Platform.exit();
+		});
+		
+		btnShowLeaderboard.setOnAction(e -> {
+			LeaderboardScreen dbLbs = new LeaderboardScreen();
 		});
 		
 	}
