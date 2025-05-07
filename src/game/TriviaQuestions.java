@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import database.GameData;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -95,7 +94,6 @@ public class TriviaQuestions extends BorderPane {
 				questionIDs[loopCount] = rs.getInt("QuestionID");
 				loopCount++;
             }
-			System.out.println("Loop Count = " + loopCount);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -115,7 +113,6 @@ public class TriviaQuestions extends BorderPane {
 			optionButtons[i].setOnAction(e -> {
 				btnSubmit.setDisable(false);
 				isCorrect = corrects[loop];
-				System.out.println("Option Button Number = " + loop);
 			});
 		}
 		
@@ -139,7 +136,6 @@ public class TriviaQuestions extends BorderPane {
 				corrects[loopCount] = rs.getBoolean("correct");
 				loopCount++;
             }
-			System.out.println("Loop Count = " + loopCount);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -196,7 +192,6 @@ public class TriviaQuestions extends BorderPane {
 				getAnswers();
 				showAnswers();
 			} else {
-				System.out.println("The count in continue is " + answeredCorrectly);
 				landingScreen.updateCategoryUsed(categoryIndex);
 				landingScreen.setNumberOfCorrectAnswers(answeredCorrectly);
 				GameData dbGdt = new GameData();

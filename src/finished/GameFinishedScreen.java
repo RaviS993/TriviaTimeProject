@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import leaderboard.LeaderboardScreen;
 
@@ -23,6 +24,10 @@ public class GameFinishedScreen extends BorderPane {
 	
 	private Label lblGameFinished = new Label("Game Finished!");
 	
+	private HBox exitButtonBox = new HBox(20);
+	private HBox showLeaderboardButtonBox = new HBox(20);
+	private HBox gameFinishedBox = new HBox(20);
+	
 	public GameFinishedScreen() {
 		styleGameFinishedScreen();
 		createGameFinishedListeners();
@@ -33,25 +38,32 @@ public class GameFinishedScreen extends BorderPane {
 		
 		// Game Finished Label
 		
-		lblGameFinished.setStyle("-fx-font: 36 arial");
-		lblGameFinished.setAlignment(Pos.CENTER);
-		lblGameFinished.setPadding(new Insets(0, 0, 0, 0));
+		gameFinishedBox.getChildren().add(lblGameFinished);
 		
-		this.setCenter(lblGameFinished);
+		lblGameFinished.setStyle("-fx-font: 36 arial");
+		
+		gameFinishedBox.setAlignment(Pos.CENTER);
+		gameFinishedBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setCenter(gameFinishedBox);
 		
 		// Exit Button
 		
-		btnExit.setAlignment(Pos.CENTER);
-		btnExit.setPadding(new Insets(0, 0, 0, 0));
+		exitButtonBox.getChildren().add(btnExit);
 		
-		this.setRight(btnExit);
+		exitButtonBox.setAlignment(Pos.CENTER);
+		exitButtonBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setRight(exitButtonBox);
 		
 		// Show Leaderboard Button
 		
-		btnShowLeaderboard.setAlignment(Pos.CENTER);
-		btnShowLeaderboard.setPadding(new Insets(0, 0, 0, 0));
+		showLeaderboardButtonBox.getChildren().add(btnShowLeaderboard);
 		
-		this.setBottom(btnShowLeaderboard);		
+		showLeaderboardButtonBox.setAlignment(Pos.CENTER);
+		showLeaderboardButtonBox.setPadding(new Insets(0, 0, 0, 0));
+		
+		this.setBottom(showLeaderboardButtonBox);		
 		
 	}
 	

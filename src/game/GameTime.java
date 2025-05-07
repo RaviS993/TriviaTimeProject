@@ -111,7 +111,6 @@ public class GameTime extends BorderPane {
 			categories[2].setStyle("-fx-base: green");
 			categories[3].setStyle("-fx-base: blue");
 			categories[4].setStyle("-fx-base: red");
-			System.out.println("Loop Count = " + loopCount);
 			dbObj.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -207,9 +206,7 @@ public class GameTime extends BorderPane {
 	}
 
 	public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
-		System.out.println("The number of correct answers is " + numberOfCorrectAnswers);
 		this.numberOfCorrectAnswers += numberOfCorrectAnswers;
-		System.out.println("The number of correct answers after update is " + this.numberOfCorrectAnswers);
 		correctAnswerTally.setText("Number of questions answered correctly: " + this.numberOfCorrectAnswers);
 	}
 
